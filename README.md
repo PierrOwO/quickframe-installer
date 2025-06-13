@@ -17,4 +17,56 @@ This repository contains the installer script for the QuickFrame CLI, which allo
 1. Clone this repository:
    ```bash
    git clone https://github.com/PierrOwO/quickframe-installer.git
-   cd quickframe-installer
+   cd quickframe-installers
+2.	Run the install script:
+   ```bash
+   sudo ./install.sh
+```
+🪟 Windows 
+1.	Clone or download this repository.
+2.	Open the folder in Command Prompt (not PowerShell).
+3.	Run the install script:
+   ```bash
+   install.bat
+   ```
+🛠 Usage
+
+Once installed, you can create a new QuickFrame project using:
+ ```bash
+quickframe new <project-name>
+```
+Example:
+```bash
+quickframe new myapp
+```
+This will:
+	•	Clone the template from https://github.com/PierrOwO/quickframe-template.git
+	•	Copy it to a local folder named myapp
+	•	Remove the .git directory
+	•	Initialize a fresh Git repository
+	•	Set executable permissions for relevant files (Linux/macOS only)
+
+⸻
+
+🔗 Template Repository
+
+By default, this tool uses the following template repository:
+```bash
+https://github.com/PierrOwO/quickframe-template.git
+```
+Make sure this repository is public and contains a valid QuickFrame project structure.
+
+⸻
+
+🧹 Uninstall
+
+Linux/macOS:
+```bash
+https://github.com/PierrOwO/quickframe-template.git
+```
+Windows:
+1.	Delete this folder:
+   ```bash
+   %USERPROFILE%\AppData\Local\Programs\QuickFrame
+   ```
+2.	Remove the folder from the PATH environment variable if needed.
