@@ -9,7 +9,9 @@ if ($argc < 3 || $argv[1] !== 'new') {
 }
 
 $projectName = $argv[2];
-$targetPath = getcwd() . DIRECTORY_SEPARATOR . $projectName;
+
+$homeDir = getenv('HOME') ?: getenv('USERPROFILE');
+$targetPath = $homeDir . DIRECTORY_SEPARATOR . $projectName;
 
 if (file_exists($targetPath)) {
     echo "Error: Folder '$projectName' already exists.\n";
@@ -21,7 +23,7 @@ $templateRepo = 'https://github.com/PierrOwO/quickframe-template.git';
 echo "Cloning QuickFrame template...\n";
 
 $tmpDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'qf_' . uniqid();
-exec("git clone " . escapeshellarg($templateRepo) . " " . escapeshellarg($tmpDir) . " 2>&1", $output, $code);
+exec("git clone $templateRepo $tmpDir 2>&1", $output, $code);
 
 if ($code !== 0) {
     echo "Error: Failed to clone template repository.\n";
@@ -29,18 +31,15 @@ if ($code !== 0) {
     exit(1);
 }
 
-function copyFolder(string $src, string $dst): void {
-    if (!is_dir($dst)) {
-        mkdir($dst, 0755, true);
-        chmod($dst, 0755);
-    }
-
+// Recursive folder copy function
+function copyFolder($src, $dst) {
+    mkdir($dst, 0755, true);
+    chmod($dst, 0755);
     $files = scandir($src);
     foreach ($files as $file) {
         if ($file === '.' || $file === '..') continue;
         $srcPath = $src . DIRECTORY_SEPARATOR . $file;
         $dstPath = $dst . DIRECTORY_SEPARATOR . $file;
-
         if (is_dir($srcPath)) {
             copyFolder($srcPath, $dstPath);
         } else {
@@ -78,5 +77,5 @@ foreach ($iterator as $file) {
 }
 
 echo "Project '$projectName' has been created successfully.\n";
-echo "Navigate to the directory: cd $projectName\n";
+echo "Navigate to the directory: cd $targetPath\n";
 echo "Start the PHP server: php frame serve\n";
