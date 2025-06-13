@@ -1,17 +1,28 @@
 #!/bin/bash
 
-# Installer for QuickFrame CLI on Unix-like systems
-
-# Path where the quickframe script will be placed
-INSTALL_PATH="/usr/local/bin/quickframe"
-
 echo "Installing QuickFrame CLI..."
 
-# Copy the CLI script to /usr/local/bin
-cp quickframe "$INSTALL_PATH"
+# Ensure script fails on error
+set -e
 
-# Ensure it is executable
-chmod +x "$INSTALL_PATH"
+# Check if 'quickframe' file exists
+if [ ! -f "quickframe" ]; then
+  echo "Error: 'quickframe' file not found in the current directory."
+  exit 1
+fi
 
+# Make sure the file is executable
+chmod +x quickframe
+
+# Ensure /usr/local/bin exists
+if [ ! -d "/usr/local/bin" ]; then
+  echo "Creating /usr/local/bin..."
+  sudo mkdir -p /usr/local/bin
+fi
+
+# Copy to /usr/local/bin
+sudo cp quickframe /usr/local/bin/quickframe
+
+# Confirm installation
 echo "QuickFrame CLI installed successfully."
-echo "You can now run: quickframe new <project-name>"
+echo "You can now run 'quickframe' from anywhere in your terminal."
