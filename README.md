@@ -18,10 +18,11 @@ This repository contains the installer script for the QuickFrame CLI, which allo
    ```bash
    git clone https://github.com/PierrOwO/quickframe-installer.git
    cd quickframe-installers
-2.	Run the install script:
+2. Run the install script:
    ```bash
+   chmod +x ./install.sh
    sudo ./install.sh
-```
+   ```
 🪟 Windows 
 1.	Clone or download this repository.
 2.	Open the folder in Command Prompt (not PowerShell).
