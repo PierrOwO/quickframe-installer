@@ -2,16 +2,25 @@
 
 # Installer for QuickFrame CLI on Unix-like systems
 
-# Path where the quickframe script will be placed
 INSTALL_PATH="/usr/local/bin/quickframe"
 
 echo "Installing QuickFrame CLI..."
 
-# Copy the CLI script to /usr/local/bin
+# Copy CLI script
 cp quickframe "$INSTALL_PATH"
-
-# Ensure it is executable
 chmod +x "$INSTALL_PATH"
-rm -rf quickframe-installer
+
 echo "QuickFrame CLI installed successfully."
 echo "You can now run: quickframe new <project-name>"
+
+# Zapytaj użytkownika, czy usunąć folder instalatora
+read -p "Do you want to delete the installer folder? (y/N): " answer
+
+if [[ "$answer" =~ ^[Yy]$ ]]; then
+    SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+    cd  
+    rm -rf "$SCRIPT_DIR"
+    echo "Installer folder deleted."
+else
+    echo "Installer folder was not deleted. You can remove it manually later."
+fi

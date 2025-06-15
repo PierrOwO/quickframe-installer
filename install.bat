@@ -1,23 +1,26 @@
-@echo off
-REM Installer for QuickFrame CLI on Windows
+#!/bin/bash
 
-SET INSTALL_DIR=%USERPROFILE%\AppData\Local\Programs\QuickFrame
-SET TARGET=%INSTALL_DIR%\quickframe.bat
+# Installer for QuickFrame CLI on Unix-like systems
 
-echo Installing QuickFrame CLI...
+INSTALL_PATH="/usr/local/bin/quickframe"
 
-REM Create target directory
-mkdir "%INSTALL_DIR%" >nul 2>&1
+echo "Installing QuickFrame CLI..."
 
-REM Copy the CLI file
-copy quickframe "%TARGET%" >nul
+# Copy CLI script to /usr/local/bin
+cp quickframe "$INSTALL_PATH"
+chmod +x "$INSTALL_PATH"
 
-REM Add install dir to PATH if not already present
-reg query "HKCU\Environment" /v PATH | find /i "%INSTALL_DIR%" >nul
-IF %ERRORLEVEL% NEQ 0 (
-    setx PATH "%PATH%;%INSTALL_DIR%"
-    echo PATH variable updated.
-)
-rmdir /s /q quickframe-installer
-echo QuickFrame CLI installed successfully.
-echo You can now run: quickframe new <project-name>"
+echo "QuickFrame CLI installed successfully."
+echo "You can now run: quickframe new <project-name>"
+
+# Ask user whether to delete installer folder
+read -p "Do you want to delete the installer folder? (y/N): " answer
+
+if [[ "$answer" =~ ^[Yy]$ ]]; then
+    SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+    cd "$SCRIPT_DIR/.." || exit 1
+    rm -rf "$SCRIPT_DIR"
+    echo "Installer folder deleted."
+else
+    echo "Installer folder was not deleted. You can remove it manually later."
+fi
