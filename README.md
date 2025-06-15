@@ -41,7 +41,7 @@ Example:
 quickframe new myapp
 ```
 This will:
-	•	Clone the template from https://github.com/PierrOwO/quickframe-template.git
+	•	Clone the template from https://github.com/PierrOwO/QuickFrame.git
 	•	Copy it to a local folder named myapp
 	•	Remove the .git directory
 	•	Initialize a fresh Git repository
