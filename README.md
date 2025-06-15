@@ -63,7 +63,7 @@ Make sure this repository is public and contains a valid QuickFrame project stru
 
 Linux/macOS:
 ```bash
-https://github.com/PierrOwO/quickframe-template.git
+sudo rm /usr/local/bin/quickframe
 ```
 Windows:
 1.	Delete this folder:
