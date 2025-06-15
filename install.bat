@@ -18,6 +18,6 @@ IF %ERRORLEVEL% NEQ 0 (
     setx PATH "%PATH%;%INSTALL_DIR%"
     echo PATH variable updated.
 )
-
+rmdir /s /q quickframe-installer
 echo QuickFrame CLI installed successfully.
 echo You can now run: quickframe new <project-name>"

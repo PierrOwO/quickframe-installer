@@ -12,6 +12,6 @@ cp quickframe "$INSTALL_PATH"
 
 # Ensure it is executable
 chmod +x "$INSTALL_PATH"
-
+rm -rf quickframe-installer
 echo "QuickFrame CLI installed successfully."
 echo "You can now run: quickframe new <project-name>"
