@@ -53,7 +53,7 @@ This will:
 
 By default, this tool uses the following template repository:
 ```bash
-https://github.com/PierrOwO/quickframe-template.git
+https://github.com/PierrOwO/QuickFrame.git
 ```
 Make sure this repository is public and contains a valid QuickFrame project structure.
 
