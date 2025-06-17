@@ -1,16 +1,18 @@
 @echo off
-REM Installer for QuickFrame CLI on Windows
+REM QuickFrame Installer for Windows
 
 SET INSTALL_DIR=%USERPROFILE%\AppData\Local\Programs\QuickFrame
-SET TARGET=%INSTALL_DIR%\quickframe.bat
+SET SCRIPT_PATH=%INSTALL_DIR%\quickframe
+SET BATCH_PATH=%INSTALL_DIR%\quickframe.bat
 
 echo Installing QuickFrame CLI...
 
-REM Create target directory
+REM Create install directory
 mkdir "%INSTALL_DIR%" >nul 2>&1
 
-REM Copy the CLI file
-copy quickframe "%TARGET%" >nul
+REM Copy the CLI PHP script and the Windows batch launcher
+copy /Y "quickframe" "%SCRIPT_PATH%" >nul
+copy /Y "quickframe.bat" "%BATCH_PATH%" >nul
 
 REM Add install dir to PATH if not already present
 reg query "HKCU\Environment" /v PATH | find /i "%INSTALL_DIR%" >nul
