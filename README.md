@@ -17,7 +17,7 @@ This repository contains the installer script for the QuickFrame CLI, which allo
 1. Clone this repository:
    ```bash
    git clone https://github.com/PierrOwO/quickframe-installer.git
-   cd quickframe-installer/MacOs:
+   cd quickframe-installer/MacOs-Linux
 2. Run the install script:
    ```bash
    chmod +x ./install.sh
