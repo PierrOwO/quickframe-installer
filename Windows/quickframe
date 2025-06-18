@@ -32,6 +32,7 @@ if ($code !== 0) {
     echo implode("\n", $output) . "\n";
     exit(1);
 }
+echo "Data downloaded, copying to   '$projectName'... \n";
 
 function copyFolder(string $src, string $dst): void {
     if (!is_dir($dst)) {
@@ -52,21 +53,19 @@ function copyFolder(string $src, string $dst): void {
 
 copyFolder($tmpDir, $targetPath);
 
-// Usuwanie folderu .git w projekcie (Windows only)
 $gitDir = $targetPath . DIRECTORY_SEPARATOR . '.git';
 if (is_dir($gitDir)) {
     exec('rmdir /s /q ' . escapeshellarg($gitDir));
 }
+echo "Initializing GIT...";
 
 chdir($targetPath);
 exec('git init');
 
-// Usuwanie folderu tymczasowego z repo (Windows only)
 if (is_dir($tmpDir)) {
     exec('rmdir /s /q ' . escapeshellarg($tmpDir));
 }
 
-// Nadanie praw (Windows ignoruje chmod, ale dla spójności)
 $iterator = new RecursiveIteratorIterator(
     new RecursiveDirectoryIterator($targetPath, RecursiveDirectoryIterator::SKIP_DOTS)
 );
@@ -78,7 +77,7 @@ foreach ($iterator as $file) {
     }
 }
 
-// Skopiuj .env.example jako .env jeśli istnieje i .env nie ma
+echo "Setting up ENV...\n";
 $envExample = $targetPath . DIRECTORY_SEPARATOR . '.env.example';
 $env = $targetPath . DIRECTORY_SEPARATOR . '.env';
 

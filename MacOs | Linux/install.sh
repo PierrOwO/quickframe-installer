@@ -16,7 +16,6 @@ echo "You can now run: quickframe new <project-name>"
 read -p "Do you want to delete the installer folder? (y/N): " answer
 
 if [[ "$answer" =~ ^[Yy]$ ]]; then
-    # Find the root directory of the installer
     SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
     INSTALLER_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 

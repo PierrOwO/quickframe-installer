@@ -28,6 +28,7 @@ if ($code !== 0) {
     echo implode("\n", $output) . "\n";
     exit(1);
 }
+echo "Data downloaded, copying to   '$projectName'... \n";
 
 function copyFolder($src, $dst) {
     mkdir($dst, 0755, true);
@@ -58,6 +59,7 @@ if (is_dir($gitDir)) {
 }
 
 chdir($targetPath);
+echo "Initializing GIT... \n";
 exec('git init');
 
 exec((strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? 'rmdir /s /q ' : 'rm -rf ') . escapeshellarg($tmpDir));
@@ -73,9 +75,9 @@ foreach ($iterator as $file) {
     }
 }
 
-// skopiuj .env.example jako .env jeśli istnieje
 $envExample = $targetPath . DIRECTORY_SEPARATOR . '.env.example';
 $env = $targetPath . DIRECTORY_SEPARATOR . '.env';
+echo "Setting up ENV...\n";
 
 if (file_exists($envExample) && !file_exists($env)) {
     copy($envExample, $env);
