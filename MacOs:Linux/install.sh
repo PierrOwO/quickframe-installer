@@ -13,14 +13,17 @@ chmod +x "$INSTALL_PATH"
 echo "QuickFrame CLI installed successfully."
 echo "You can now run: quickframe new <project-name>"
 
-# Zapytaj użytkownika, czy usunąć folder instalatora
 read -p "Do you want to delete the installer folder? (y/N): " answer
 
 if [[ "$answer" =~ ^[Yy]$ ]]; then
+    # Find the root directory of the installer
     SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-    cd  
-    rm -rf "$SCRIPT_DIR"
-    echo "Installer folder deleted."
+    INSTALLER_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+
+    cd ~
+    rm -rf "$INSTALLER_ROOT"
+
+    echo "Installer folder deleted: $INSTALLER_ROOT"
 else
     echo "Installer folder was not deleted. You can remove it manually later."
 fi
