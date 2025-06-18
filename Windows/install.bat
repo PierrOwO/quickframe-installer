@@ -22,19 +22,8 @@ IF %ERRORLEVEL% NEQ 0 (
 )
 
 echo.
-set /p DELETE_CONFIRM=Do you want to delete the installer folder? (y/N): 
-IF /I "%DELETE_CONFIRM%"=="y" (
-    SET SCRIPT_DIR=%~dp0
-    SET SCRIPT_DIR=%SCRIPT_DIR:~0,-1%
-    FOR %%I IN ("%SCRIPT_DIR%\..\..") DO SET INSTALLER_ROOT=%%~fI
-
-    cd /d %USERPROFILE%
-    rmdir /s /q "%INSTALLER_ROOT%"
-    echo Installer folder deleted.
-) ELSE (
-    echo Installer folder was not deleted. You can remove it manually later.
-)
-
-echo.
 echo QuickFrame CLI installed successfully.
 echo You can now run: quickframe new ^<project-name^>
+echo.
+echo You may now delete the installer folder manually if you wish.
+pause
