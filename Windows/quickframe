@@ -96,4 +96,4 @@ if (file_exists($envExample) && !file_exists($env)) {
 }
 
 echo "Project '$projectName' has been created successfully in $baseDir.\n";
-echo "Navigate to the directory: cd \"$targetPath\"\n";
+echo "Navigate to the directory: cd C:\\QuickFrame\\$projectName\n";
