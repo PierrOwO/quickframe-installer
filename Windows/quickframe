@@ -65,10 +65,25 @@ $gitDir = $targetPath . DIRECTORY_SEPARATOR . '.git';
 if (is_dir($gitDir)) {
     exec('rmdir /s /q ' . escapeshellarg($gitDir));
 }
-echo "Initializing GIT...";
+
+$gitignorePath = $targetPath . DIRECTORY_SEPARATOR . '.gitignore';
+if (!file_exists($gitignorePath)) {
+    file_put_contents($gitignorePath, "node_modules/\n");
+}
+
+echo "Initializing GIT...\n";
 
 chdir($targetPath);
 exec('git init');
+
+echo "Installing npm dependencies...\n";
+exec('npm install 2>&1', $npmOutput, $npmCode);
+if ($npmCode !== 0) {
+    echo "Warning: npm install failed.\n";
+    echo implode("\n", $npmOutput) . "\n";
+} else {
+    echo "npm dependencies installed successfully.\n";
+}
 
 if (is_dir($tmpDir)) {
     exec('rmdir /s /q ' . escapeshellarg($tmpDir));
@@ -94,4 +109,4 @@ if (file_exists($envExample) && !file_exists($env)) {
 }
 
 echo "Project '$projectName' has been created successfully in $baseDir.\n";
-echo "Navigate to the directory: cd C:\\QuickFrame\\$projectName\n";
+echo "Navigate to the directory: cd " . str_replace('/', '\\', $targetPath) . "\n";
