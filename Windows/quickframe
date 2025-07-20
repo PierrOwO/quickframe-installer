@@ -2,6 +2,26 @@
 <?php
 // QuickFrame CLI - Windows only version
 
+function color($text, $colorCode) {
+    return "\033[" . $colorCode . "m$text\033[0m";
+}
+
+function showSpinner($process, $message = '') {
+    $spinner = ['⠋','⠙','⠸','⠴','⠦','⠇'];
+    $i = 0;
+
+    while (true) {
+        $status = proc_get_status($process);
+        if (!$status['running']) {
+            break;
+        }
+        echo "\r$message " . $spinner[$i++ % count($spinner)] . ' ';
+        usleep(100000);
+    }
+
+    echo "\r$message " . color("✓", "32") . "\n";
+}
+
 if ($argc < 3 || $argv[1] !== 'new') {
     echo "Usage:\n";
     echo "  quickframe new <project-name>\n";
@@ -9,10 +29,9 @@ if ($argc < 3 || $argv[1] !== 'new') {
 }
 
 $projectName = $argv[2];
-
 $drive = getenv('SystemDrive') ?: 'C:';
-
 $baseDir = $drive . DIRECTORY_SEPARATOR . 'QuickFrame';
+
 if (!is_dir($baseDir)) {
     mkdir($baseDir, 0755, true);
 }
@@ -20,27 +39,36 @@ if (!is_dir($baseDir)) {
 $targetPath = $baseDir . DIRECTORY_SEPARATOR . $projectName;
 
 if (file_exists($targetPath)) {
-    echo "Error: Folder '$projectName' already exists in $baseDir.\n";
+    echo color("Error: Folder '$projectName' already exists in $baseDir.\n", "31");
     exit(1);
 }
 
 $templateRepo = 'https://github.com/PierrOwO/QuickFrame.git';
-
 echo "Downloading data...\n";
 
 $tmpDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'qf_' . uniqid();
-
 $escapedRepo = escapeshellarg($templateRepo);
 $escapedTmpDir = escapeshellarg($tmpDir);
 
-exec("git clone $escapedRepo $escapedTmpDir 2>&1", $output, $code);
+$cmdClone = "git clone $escapedRepo $escapedTmpDir 2>&1";
+$processClone = proc_open($cmdClone, [
+    1 => ['pipe', 'w'],
+    2 => ['pipe', 'w']
+], $pipesClone);
 
-if ($code !== 0) {
-    echo "Error: Failed to download data.\n";
-    echo implode("\n", $output) . "\n";
+if (is_resource($processClone)) {
+    showSpinner($processClone, "Cloning repository...");
+    $cloneCode = proc_close($processClone);
+    if ($cloneCode !== 0) {
+        echo color("Error: Failed to download data.\n", "31");
+        exit(1);
+    }
+} else {
+    echo color("Error: Could not start git clone process.\n", "31");
     exit(1);
 }
-echo "Data downloaded, copying to '$targetPath'... \n";
+
+echo "Data downloaded, copying to '" . color($projectName, "33") . "'... \n";
 
 function copyFolder(string $src, string $dst): void {
     if (!is_dir($dst)) {
@@ -72,17 +100,26 @@ if (!file_exists($gitignorePath)) {
 }
 
 echo "Initializing GIT...\n";
-
 chdir($targetPath);
 exec('git init');
 
 echo "Installing npm dependencies...\n";
-exec('npm install 2>&1', $npmOutput, $npmCode);
-if ($npmCode !== 0) {
-    echo "Warning: npm install failed.\n";
-    echo implode("\n", $npmOutput) . "\n";
+$cmdNpm = 'npm install 2>&1';
+$processNpm = proc_open($cmdNpm, [
+    1 => ['pipe', 'w'],
+    2 => ['pipe', 'w']
+], $pipesNpm);
+
+if (is_resource($processNpm)) {
+    showSpinner($processNpm, "Running npm install...");
+    $npmCode = proc_close($processNpm);
+    if ($npmCode !== 0) {
+        echo color("Warning: npm install failed.\n", "31");
+    } else {
+        echo color("npm dependencies installed successfully.\n", "32");
+    }
 } else {
-    echo "npm dependencies installed successfully.\n";
+    echo color("Warning: Could not start npm install process.\n", "31");
 }
 
 if (is_dir($tmpDir)) {
@@ -92,7 +129,6 @@ if (is_dir($tmpDir)) {
 $iterator = new RecursiveIteratorIterator(
     new RecursiveDirectoryIterator($targetPath, RecursiveDirectoryIterator::SKIP_DOTS)
 );
-
 foreach ($iterator as $file) {
     $filename = $file->getFilename();
     if ($filename === 'quickframe' || pathinfo($filename, PATHINFO_EXTENSION) === 'sh') {
@@ -103,10 +139,9 @@ foreach ($iterator as $file) {
 echo "Setting up ENV...\n";
 $envExample = $targetPath . DIRECTORY_SEPARATOR . '.env.example';
 $env = $targetPath . DIRECTORY_SEPARATOR . '.env';
-
 if (file_exists($envExample) && !file_exists($env)) {
     copy($envExample, $env);
 }
 
-echo "Project '$projectName' has been created successfully in $baseDir.\n";
-echo "Navigate to the directory: cd " . str_replace('/', '\\', $targetPath) . "\n";
+echo "Project '" . color($projectName, "33") . "' has been created successfully in $baseDir.\n";
+echo "Navigate to the directory: " . color("cd " . str_replace('/', '\\', $targetPath), "36") . "\n";

@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 // QuickFrame CLI
+
 function showSpinner($processId, $message = '') {
     $spinner = ['⠋','⠙','⠸','⠴','⠦','⠇'];
     $i = 0;
@@ -36,7 +37,6 @@ $templateRepo = 'https://github.com/PierrOwO/QuickFrame.git';
 echo "Downloading data...\n";
 
 $tmpDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'qf_' . uniqid();
-//exec("git clone $templateRepo $tmpDir 2>&1", $output, $code);
 $cmd = "git clone $templateRepo $tmpDir 2>&1";
 $process = proc_open($cmd, [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
 $pid = proc_get_status($process)['pid'];
@@ -82,8 +82,6 @@ chdir($targetPath);
 echo "Initializing GIT... \n";
 exec('git init');
 
-//echo "Installing npm dependencies...\n";
-//exec('npm install 2>&1', $npmOutput, $npmCode);
 $cmd = 'npm install 2>&1';
 $process = proc_open($cmd, [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
 $pid = proc_get_status($process)['pid'];
