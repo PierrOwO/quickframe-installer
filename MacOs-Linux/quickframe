@@ -2,7 +2,7 @@
 <?php
 // QuickFrame CLI
 function showSpinner($processId, $message = '') {
-    $spinner = ['|', '/', '-', '\\'];
+    $spinner = ['⠋','⠙','⠸','⠴','⠦','⠇'];
     $i = 0;
 
     while (posix_getpgid($processId)) {
@@ -10,7 +10,7 @@ function showSpinner($processId, $message = '') {
         usleep(100000);
     }
 
-    echo "\r$message ✓\n";
+    echo "\r$message \033[32m✓\033[0m\n";
 }
 if ($argc < 3 || $argv[1] !== 'new') {
     echo "Usage:\n";
@@ -27,7 +27,7 @@ if (!$homeDir) {
 $targetPath = $homeDir . DIRECTORY_SEPARATOR . $projectName;
 
 if (file_exists($targetPath)) {
-    echo "Error: Folder '$projectName' already exists.\n";
+    echo "Error: Folder '\033[33m$projectName\033[0m' already exists.\n";
     exit(1);
 }
 
@@ -47,7 +47,7 @@ if ($code !== 0) {
     echo implode("\n", $output) . "\n";
     exit(1);
 }
-echo "Data downloaded, copying to '$projectName'... \n";
+echo "Data downloaded, copying to '\033[33m$projectName\033[0m'... \n";
 
 function copyFolder($src, $dst) {
     mkdir($dst, 0755, true);
@@ -117,5 +117,5 @@ if (file_exists($envExample) && !file_exists($env)) {
     copy($envExample, $env);
 }
 
-echo "Project '$projectName' has been created successfully.\n";
-echo "Navigate to the directory: cd $projectName\n";
+echo "Project '\033[33m$projectName\033[0m' has been created successfully.\n";
+echo "Navigate to the directory: \033[36mcd $projectName\033[0m\n";
