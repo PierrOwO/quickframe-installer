@@ -1,6 +1,6 @@
 #!/usr/bin/env php
 <?php
-// QuickFrame CLI - Windows only version
+// QuickFrame CLI - Windows version
 
 function color($text, $colorCode) {
     return "\033[" . $colorCode . "m$text\033[0m";
@@ -12,9 +12,8 @@ function showSpinner($process, $message = '') {
 
     while (true) {
         $status = proc_get_status($process);
-        if (!$status['running']) {
-            break;
-        }
+        if (!$status['running']) break;
+
         echo "\r$message " . $spinner[$i++ % count($spinner)] . ' ';
         usleep(100000);
     }
@@ -47,10 +46,8 @@ $templateRepo = 'https://github.com/PierrOwO/QuickFrame.git';
 echo "Downloading data...\n";
 
 $tmpDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'qf_' . uniqid();
-$escapedRepo = escapeshellarg($templateRepo);
-$escapedTmpDir = escapeshellarg($tmpDir);
+$cmdClone = "git clone $templateRepo $tmpDir 2>&1";
 
-$cmdClone = "git clone $escapedRepo $escapedTmpDir 2>&1";
 $processClone = proc_open($cmdClone, [
     1 => ['pipe', 'w'],
     2 => ['pipe', 'w']
@@ -58,6 +55,8 @@ $processClone = proc_open($cmdClone, [
 
 if (is_resource($processClone)) {
     showSpinner($processClone, "Cloning repository...");
+    fclose($pipesClone[1]);
+    fclose($pipesClone[2]);
     $cloneCode = proc_close($processClone);
     if ($cloneCode !== 0) {
         echo color("Error: Failed to download data.\n", "31");
@@ -99,22 +98,30 @@ if (!file_exists($gitignorePath)) {
     file_put_contents($gitignorePath, "node_modules/\n");
 }
 
+// Inicjalizuj GIT
 echo "Initializing GIT...\n";
 chdir($targetPath);
 exec('git init');
 
 echo "Installing npm dependencies...\n";
-$cmdNpm = 'npm install 2>&1';
-$processNpm = proc_open($cmdNpm, [
+$cmdNpm = 'npm install';
+$descriptorspec = [
     1 => ['pipe', 'w'],
     2 => ['pipe', 'w']
-], $pipesNpm);
+];
+$processNpm = proc_open($cmdNpm, $descriptorspec, $pipesNpm, $targetPath);
 
 if (is_resource($processNpm)) {
     showSpinner($processNpm, "Running npm install...");
+    $stdout = stream_get_contents($pipesNpm[1]);
+    $stderr = stream_get_contents($pipesNpm[2]);
+    fclose($pipesNpm[1]);
+    fclose($pipesNpm[2]);
     $npmCode = proc_close($processNpm);
+
     if ($npmCode !== 0) {
         echo color("Warning: npm install failed.\n", "31");
+        echo color($stderr, "31");
     } else {
         echo color("npm dependencies installed successfully.\n", "32");
     }
